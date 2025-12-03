@@ -656,7 +656,13 @@ def create_reward(current_admin):
         logger.error(f"Error creating reward: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
 
+# Initialize database on startup
+with app.app_context():
+    init_db()
+
+# For ASGI server compatibility (uvicorn)
+from asgiref.wsgi import WsgiToAsgi
+app_asgi = WsgiToAsgi(app)
+
 if __name__ == '__main__':
-    with app.app_context():
-        init_db()
     app.run(host='0.0.0.0', port=8001, debug=False)
